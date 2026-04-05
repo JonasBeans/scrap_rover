@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: sans-serif;
+    color: white;
+}
+video {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+    max-width:480px;
+    max-height:640px;
+}
+
+.controls-grid-container-row {
+    margin: 2%;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.controls-grid-container-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

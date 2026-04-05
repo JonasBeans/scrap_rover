@@ -3,59 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="webrtc_connection.js"></script>
+
+  <link rel="stylesheet" href="style.css"/>
   <title>Scrap Rover</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      font-family: sans-serif;
-      color: white;
-    }
-    video {
-      width: 100%;
-      max-width: 800px;
-      border-radius: 8px;
-      background: #000;
-    }
-  </style>
 </head>
 <body>
-  <h2>🛰 Scrap Rover Live Feed</h2>
-  <video id="stream" style='max-width:480px;max-height:640px' autoplay muted playsinline></video>
+  <h2>Scrap Rover Live Feed</h2>
+  <video id="stream" autoplay muted playsinline></video>
+  <div class="controls-grid-container-row">
+    <div>
+      <button id="button_left">LEFT</button>
+    </div>
+    <div class="controls-grid-container-column">
+      <button id="button_up">UP</button>
+      <button id="button_down">DOWN</button>
+    </div>
+    <div>
+      <button id="button_right">RIGHT</button>
+    </div>
+  </div>
 
-  <script>
-    async function startStream() {
-      const pc = new RTCPeerConnection();
+  <script src="camera_controls.js"></script>
 
-      // When a video track arrives, attach it to the <video> element
-      pc.ontrack = (event) => {
-        document.getElementById('stream').srcObject = event.streams[0];
-      };
-
-      pc.addTransceiver('video', { direction: 'recvonly' });
-      pc.addTransceiver('audio', { direction: 'recvonly' });
-
-      // Create WebRTC offer
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-
-      // Send offer to MediaMTX WHEP endpoint and get answer
-      const response = await fetch('http://localhost:8889/scrap_rover_cam/whep', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/sdp' },
-        body: offer.sdp,
-      });
-
-      const answerSdp = await response.text();
-      await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
-    }
-
-    startStream();
-  </script>
 </body>
 </html>
