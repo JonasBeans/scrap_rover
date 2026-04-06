@@ -1,7 +1,15 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 import requests
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return send_from_directory('website', 'index.html')
+
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory('website', path)
 
 @app.route('/ptz', methods=['POST'])
 def ptz():
