@@ -1,30 +1,4 @@
-async function move_camera_up() {
-    const response = await fetch("http://192.168.0.155:5000/ptz", {
-        method: "POST",
-        body: 'move=up',
-    });
-}
-
-async function move_camera_down() {
-    const response = await fetch("http://192.168.0.155:5000/ptz", {
-        method: "POST",
-        body: 'move=down',
-    });
-}
-
-async function move_camera_left() {
-    const response = await fetch("http://192.168.0.155:5000/ptz", {
-        method: "POST",
-        body: 'move=left',
-    });
-}
-
-async function move_camera_right() {
-    const response = await fetch("http://192.168.0.155:5000/ptz", {
-        method: "POST",
-        body: 'move=right',
-    });
-}
+import {move_camera_right, move_camera_down, move_camera_left, move_camera_up} from './gateway/camera_controls_gateway.js'
 
 document.getElementById('button_up').addEventListener('click', move_camera_up);
 document.getElementById('button_down').addEventListener('click', move_camera_down)
