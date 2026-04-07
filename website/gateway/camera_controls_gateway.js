@@ -1,4 +1,5 @@
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 export async function move_camera_up() {
     const response = await fetch("http://192.168.0.155:5000/ptz", {
         method: "POST",
