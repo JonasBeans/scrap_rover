@@ -17,7 +17,7 @@ async function startStream() {
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    const response = await fetch('http://192.168.0.155:8889/scrap_rover_cam/whep', {
+    const response = await fetch('http://192.168.1.100:8889/scrap_rover_cam/whep', {
         method: 'POST',
         headers: { 'Content-Type': 'application/sdp' },
         body: offer.sdp,

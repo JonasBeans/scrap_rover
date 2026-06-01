@@ -9,6 +9,7 @@
 <body>
   <h2>Scrap Rover Live Feed</h2>
   <video id="stream" controls autoplay muted playsinline></video>
+  <p>Enable light pulsating</p><button id="enable_pulsating_light">PUSH</button>
   <div class="controls-grid-container-row">
     <div>
       <button id="button_left">LEFT</button>
@@ -24,6 +25,7 @@
 
   <script type="module" src="camera_controls.js"></script>
   <script src="webrtc_connection.js"></script>
+  <script src="light_controls.js"></script>
   <script type="module" src="gamepad_controls.js"></script>
 
 </body>
