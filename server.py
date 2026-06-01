@@ -6,41 +6,9 @@ import threading
 import queue
 
 led = PWMLED(17)
-
 app = Flask(__name__)
 
-led_enabled = True
-led_thread = None
-stop_pulsate = threading.Event()
-
-def pulsate_loop():
-    while not stop_pulsate.is_set():
-        for i in range (0, 101, 5):
-            if stop_pulsate.is_set():
-                return
-            led.value = i / 100
-            sleep(0.03)
-        for i in range(100, -1, -5):
-            if stop_pulsate.is_set():
-                return
-            led.value = i / 100
-            sleep(0.03)
-
-def start_pulsating():
-    global led_thread
-    stop_pulsate.clear()
-    led_thread = threading.Thread(target=pulsate_loop, daemon=True)
-    led_thread.start()
-
-def stop_pulsating(): 
-    stop_pulsate.set()
-    if led_thread:
-        led_thread.join(timeout=1)
-    led.value = 0
-
-start_pulsating()
-
-# Queue with max size — drops backlog if camera is slow
+# Queue with max size 1 — drops backlog if camera is slow
 camera_queue = queue.Queue(maxsize=1)
 
 def camera_worker():
@@ -82,17 +50,22 @@ def ptz():
     except queue.Full:
         return jsonify({"status": "busy"}), 429
 
-@app.route('/switch/light', methods=['POST'])
-def switch_light():
-    global led_enabled
-    led_enabled = not led_enabled
-    if led_enabled:
-        start_pulsating()
-    else:
-        stop_pulsating()
-    return jsonify({"light": "on" if led_enabled else "off"})
+@app.route('/light', methods=['POST'])
+def set_light():
+    data = request.get_json()
+    if data is None or "value" not in data:
+        return jsonify({"error": "Missing 'value' field"}), 400
+
+    try:
+        brightness = float(data["value"])
+    except (TypeError, ValueError):
+        return jsonify({"error": "'value' must be a number"}), 400
+
+    if not 0 <= brightness <= 1:
+        return jsonify({"error": "'value' must be between 0 and 1"}), 400
+
+    led.value = brightness
+    return jsonify({"light": brightness})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-
-
