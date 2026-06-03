@@ -35,14 +35,11 @@ function handleMotor(axes) {
     // R2 axis ranges from 0 (not pressed) to 1 (fully pressed)
     const r2Value = axes[7];
     
-    // Only send motor command if R2 button is actually pressed
-    if (r2Value > 0) {
-        fetch('/motor', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ speed: r2Value })
-        });
-    }
+    fetch('/motor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ speed: r2Value })
+    });
 }
 
 let lastMotorSpeed = null;
