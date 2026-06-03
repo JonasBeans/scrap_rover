@@ -30,33 +30,33 @@ function handleSticks(axes) {
     }
 }
 
-function handleLightStick(axes) {
-    // axes[2] = right stick X, axes[3] = right stick Y
-    // Gamepad Y axis: -1 = up (full brightness), 1 = down (off)
-    // Remap from [-1, 1] to [1, 0]
-    const rawY = axes[3];
-    const brightness = (1 - rawY) / 2;
-
-    fetch('/light', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: brightness })
-    });
+function handleMotor(axes) {
+    // axes[7] = R2 button axis
+    // R2 axis ranges from 0 (not pressed) to 1 (fully pressed)
+    const r2Value = axes[7];
+    
+    // Only send motor command if R2 button is actually pressed
+    if (r2Value > 0) {
+        fetch('/motor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ speed: r2Value })
+        });
+    }
 }
 
-let lastBrightness = null;
+let lastMotorSpeed = null;
 
 function controlLoop() {
     if (controllerIndex !== null) {
         const gamepad = navigator.getGamepads()[controllerIndex];
         handleSticks(gamepad.axes);
 
-        const rawY = gamepad.axes[3];
-        const brightness = Math.round((1 - rawY) / 2 * 100) / 100;
+        const r2Value = Math.round(gamepad.axes[7] * 100) / 100;
 
-        if (brightness !== lastBrightness) {
-            lastBrightness = brightness;
-            handleLightStick(gamepad.axes);
+        if (r2Value !== lastMotorSpeed) {
+            lastMotorSpeed = r2Value;
+            handleMotor(gamepad.axes);
         }
     }
     requestAnimationFrame(controlLoop);
