@@ -67,5 +67,24 @@ def set_light():
     led.value = brightness
     return jsonify({"light": brightness})
 
+@app.route('/motor', methods=['POST'])
+def set_motor():
+    data = request.get_json()
+    if data is None or "speed" not in data:
+        return jsonify({"error": "Missing 'speed' field"}), 400
+
+    try:
+        speed = float(data["speed"])
+    except (TypeError, ValueError):
+        return jsonify({"error": "'speed' must be a number"}), 400
+
+    if not 0 <= speed <= 1:
+        return jsonify({"error": "'speed' must be between 0 and 1"}), 400
+
+    # TODO: Implement motor control logic here
+    # For now, just logging the speed value
+    print(f"Motor speed set to: {speed}")
+    return jsonify({"motor": speed})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
