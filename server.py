@@ -50,23 +50,6 @@ def ptz():
     except queue.Full:
         return jsonify({"status": "busy"}), 429
 
-@app.route('/light', methods=['POST'])
-def set_light():
-    data = request.get_json()
-    if data is None or "value" not in data:
-        return jsonify({"error": "Missing 'value' field"}), 400
-
-    try:
-        brightness = float(data["value"])
-    except (TypeError, ValueError):
-        return jsonify({"error": "'value' must be a number"}), 400
-
-    if not 0 <= brightness <= 1:
-        return jsonify({"error": "'value' must be between 0 and 1"}), 400
-
-    led.value = brightness
-    return jsonify({"light": brightness})
-
 @app.route('/motor', methods=['POST'])
 def set_motor():
     data = request.get_json()
